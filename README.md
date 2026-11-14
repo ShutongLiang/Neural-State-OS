@@ -4,7 +4,7 @@
 
 # Neural State OS
 
-**Make your local model feel — then measure what changed.**
+**Make your model feel.**
 
 *Calibrated internal-state modulation and readout for local language models*
 
