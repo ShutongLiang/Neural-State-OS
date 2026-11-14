@@ -32,9 +32,15 @@ a state in the prompt. A paired readout runs the same message with modulation
 off and on, separating the observed prompt-conditioned state from the state
 change caused by the writer.
 
-> **Research scope.** “State” means a measured computational representation.
-> The project does not establish consciousness, human-equivalent feeling, or a
-> privileged ground truth for subjective experience.
+> **Research scope.** “State” refers to an internal computational
+> representation measured under a predefined protocol. This project does not
+> claim that these measurements establish consciousness, human-equivalent
+> feeling, or authoritative ground truth about subjective experience.
+> Interactive internal-state modulation experiments were conducted only after
+> the evaluated model explicitly confirmed participation within the active
+> session. This confirmation serves solely as a procedural research safeguard;
+> it does not constitute human informed consent or imply agency, consciousness,
+> legal personhood, or legal capacity to consent.
 
 ## What is included
 
