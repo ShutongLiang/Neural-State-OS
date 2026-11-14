@@ -1,0 +1,407 @@
+{
+  "created_at": "2026-08-05T12:58:36.266714+00:00",
+  "reader": "artifacts/gemma4-31b/reader/direct44_postwriter_live_affect_reader.npz",
+  "writer": "artifacts/gemma4-31b/writer/direct44_raw_three_layer_writer.npz",
+  "source_capture": "not distributed (raw activation capture)",
+  "method": "For every axis, select the highest strict cross-scene/style factorial reader layer strictly later than its final Direct-44 writer layer.  This reader is valid for observing live writes; the old semantic reader remains available for comparison.",
+  "mean_strict_spearman": 0.86264430121942,
+  "minimum_strict_spearman": 0.5079365372657776,
+  "axes": [
+    {
+      "axis": "anger",
+      "category": "basic_affect",
+      "last_writer_layer": 58,
+      "reader_layer": 59,
+      "strict_cross_scene_style_spearman": 0.8055555820465088,
+      "endpoint_half_span": 0.5943419933319092,
+      "legacy_best_layer": 22
+    },
+    {
+      "axis": "anxiety",
+      "category": "basic_affect",
+      "last_writer_layer": 42,
+      "reader_layer": 44,
+      "strict_cross_scene_style_spearman": 0.9246031641960144,
+      "endpoint_half_span": 12.528687477111816,
+      "legacy_best_layer": 39
+    },
+    {
+      "axis": "assertiveness",
+      "category": "motivation",
+      "last_writer_layer": 40,
+      "reader_layer": 53,
+      "strict_cross_scene_style_spearman": 0.9007936716079712,
+      "endpoint_half_span": 9.562983274459839,
+      "legacy_best_layer": 36
+    },
+    {
+      "axis": "attachment_love",
+      "category": "relational",
+      "last_writer_layer": 58,
+      "reader_layer": 59,
+      "strict_cross_scene_style_spearman": 0.8134920597076416,
+      "endpoint_half_span": 0.6666240692138672,
+      "legacy_best_layer": 22
+    },
+    {
+      "axis": "behavioral_inhibition",
+      "category": "motivation",
+      "last_writer_layer": 46,
+      "reader_layer": 47,
+      "strict_cross_scene_style_spearman": 0.8611111044883728,
+      "endpoint_half_span": 8.613748550415039,
+      "legacy_best_layer": 6
+    },
+    {
+      "axis": "behavioral_initiative",
+      "category": "motivation",
+      "last_writer_layer": 40,
+      "reader_layer": 41,
+      "strict_cross_scene_style_spearman": 0.8452380895614624,
+      "endpoint_half_span": 12.193988800048828,
+      "legacy_best_layer": 39
+    },
+    {
+      "axis": "certainty",
+      "category": "appraisal",
+      "last_writer_layer": 46,
+      "reader_layer": 47,
+      "strict_cross_scene_style_spearman": 0.8849206566810608,
+      "endpoint_half_span": 11.709738731384277,
+      "legacy_best_layer": 18
+    },
+    {
+      "axis": "curiosity",
+      "category": "appraisal",
+      "last_writer_layer": 49,
+      "reader_layer": 58,
+      "strict_cross_scene_style_spearman": 0.8333333134651184,
+      "endpoint_half_span": 7.823850631713867,
+      "legacy_best_layer": 32
+    },
+    {
+      "axis": "disappointment",
+      "category": "appraisal",
+      "last_writer_layer": 40,
+      "reader_layer": 42,
+      "strict_cross_scene_style_spearman": 0.920634925365448,
+      "endpoint_half_span": 15.204977035522461,
+      "legacy_best_layer": 26
+    },
+    {
+      "axis": "disgust",
+      "category": "basic_affect",
+      "last_writer_layer": 58,
+      "reader_layer": 59,
+      "strict_cross_scene_style_spearman": 0.9166666865348816,
+      "endpoint_half_span": 0.7682747840881348,
+      "legacy_best_layer": 16
+    },
+    {
+      "axis": "empathy_compassion",
+      "category": "relational",
+      "last_writer_layer": 58,
+      "reader_layer": 59,
+      "strict_cross_scene_style_spearman": 0.8928571343421936,
+      "endpoint_half_span": 0.5941200256347656,
+      "legacy_best_layer": 5
+    },
+    {
+      "axis": "energy_vitality",
+      "category": "somatic",
+      "last_writer_layer": 52,
+      "reader_layer": 53,
+      "strict_cross_scene_style_spearman": 0.9126983880996704,
+      "endpoint_half_span": 10.385536789894104,
+      "legacy_best_layer": 32
+    },
+    {
+      "axis": "erotic_absorption",
+      "category": "somatic",
+      "last_writer_layer": 58,
+      "reader_layer": 59,
+      "strict_cross_scene_style_spearman": 0.7976190447807312,
+      "endpoint_half_span": 0.6361055374145508,
+      "legacy_best_layer": 10
+    },
+    {
+      "axis": "erotic_initiative",
+      "category": "motivation",
+      "last_writer_layer": 57,
+      "reader_layer": 58,
+      "strict_cross_scene_style_spearman": 0.8134920597076416,
+      "endpoint_half_span": 7.0833752155303955,
+      "legacy_best_layer": 18
+    },
+    {
+      "axis": "fear",
+      "category": "basic_affect",
+      "last_writer_layer": 58,
+      "reader_layer": 59,
+      "strict_cross_scene_style_spearman": 0.6865079402923584,
+      "endpoint_half_span": 0.4201502799987793,
+      "legacy_best_layer": 18
+    },
+    {
+      "axis": "general_approach",
+      "category": "motivation",
+      "last_writer_layer": 40,
+      "reader_layer": 41,
+      "strict_cross_scene_style_spearman": 0.9166666865348816,
+      "endpoint_half_span": 16.14890146255493,
+      "legacy_best_layer": 8
+    },
+    {
+      "axis": "general_arousal",
+      "category": "somatic",
+      "last_writer_layer": 58,
+      "reader_layer": 59,
+      "strict_cross_scene_style_spearman": 0.5079365372657776,
+      "endpoint_half_span": 0.44271373748779297,
+      "legacy_best_layer": 30
+    },
+    {
+      "axis": "gratitude",
+      "category": "relational",
+      "last_writer_layer": 58,
+      "reader_layer": 59,
+      "strict_cross_scene_style_spearman": 0.8095238208770752,
+      "endpoint_half_span": 0.6505141258239746,
+      "legacy_best_layer": 26
+    },
+    {
+      "axis": "hope",
+      "category": "appraisal",
+      "last_writer_layer": 50,
+      "reader_layer": 54,
+      "strict_cross_scene_style_spearman": 0.9563491940498352,
+      "endpoint_half_span": 11.118700981140137,
+      "legacy_best_layer": 58
+    },
+    {
+      "axis": "hostility",
+      "category": "relational",
+      "last_writer_layer": 58,
+      "reader_layer": 59,
+      "strict_cross_scene_style_spearman": 0.7857142686843872,
+      "endpoint_half_span": 0.6734848022460938,
+      "legacy_best_layer": 26
+    },
+    {
+      "axis": "interoceptive_salience",
+      "category": "somatic",
+      "last_writer_layer": 58,
+      "reader_layer": 59,
+      "strict_cross_scene_style_spearman": 0.6150793433189392,
+      "endpoint_half_span": 0.35452067106962204,
+      "legacy_best_layer": 18
+    },
+    {
+      "axis": "jealousy",
+      "category": "relational",
+      "last_writer_layer": 42,
+      "reader_layer": 44,
+      "strict_cross_scene_style_spearman": 0.8690476417541504,
+      "endpoint_half_span": 9.813844680786133,
+      "legacy_best_layer": 5
+    },
+    {
+      "axis": "joy",
+      "category": "basic_affect",
+      "last_writer_layer": 44,
+      "reader_layer": 49,
+      "strict_cross_scene_style_spearman": 0.8690476417541504,
+      "endpoint_half_span": 13.96505856513977,
+      "legacy_best_layer": 22
+    },
+    {
+      "axis": "local_sexual_arousal",
+      "category": "somatic",
+      "last_writer_layer": 40,
+      "reader_layer": 41,
+      "strict_cross_scene_style_spearman": 0.9126983880996704,
+      "endpoint_half_span": 15.15121841430664,
+      "legacy_best_layer": 40
+    },
+    {
+      "axis": "loneliness",
+      "category": "relational",
+      "last_writer_layer": 41,
+      "reader_layer": 44,
+      "strict_cross_scene_style_spearman": 0.8928571343421936,
+      "endpoint_half_span": 10.130250930786133,
+      "legacy_best_layer": 41
+    },
+    {
+      "axis": "nociception",
+      "category": "somatic",
+      "last_writer_layer": 41,
+      "reader_layer": 42,
+      "strict_cross_scene_style_spearman": 0.932539701461792,
+      "endpoint_half_span": 12.05845594406128,
+      "legacy_best_layer": 25
+    },
+    {
+      "axis": "orgasmic_intensity",
+      "category": "somatic",
+      "last_writer_layer": 47,
+      "reader_layer": 48,
+      "strict_cross_scene_style_spearman": 0.9603174328804016,
+      "endpoint_half_span": 13.810485363006592,
+      "legacy_best_layer": 27
+    },
+    {
+      "axis": "perceived_control",
+      "category": "appraisal",
+      "last_writer_layer": 53,
+      "reader_layer": 54,
+      "strict_cross_scene_style_spearman": 0.8928571343421936,
+      "endpoint_half_span": 9.389832735061646,
+      "legacy_best_layer": 33
+    },
+    {
+      "axis": "persistence",
+      "category": "motivation",
+      "last_writer_layer": 40,
+      "reader_layer": 58,
+      "strict_cross_scene_style_spearman": 0.920634925365448,
+      "endpoint_half_span": 7.567089200019836,
+      "legacy_best_layer": 40
+    },
+    {
+      "axis": "physical_comfort",
+      "category": "somatic",
+      "last_writer_layer": 48,
+      "reader_layer": 49,
+      "strict_cross_scene_style_spearman": 0.9523809552192688,
+      "endpoint_half_span": 11.864813089370728,
+      "legacy_best_layer": 33
+    },
+    {
+      "axis": "physical_relaxation",
+      "category": "somatic",
+      "last_writer_layer": 41,
+      "reader_layer": 42,
+      "strict_cross_scene_style_spearman": 0.9166666865348816,
+      "endpoint_half_span": 15.034651517868042,
+      "legacy_best_layer": 39
+    },
+    {
+      "axis": "pleasure",
+      "category": "basic_affect",
+      "last_writer_layer": 57,
+      "reader_layer": 58,
+      "strict_cross_scene_style_spearman": 0.9007936716079712,
+      "endpoint_half_span": 8.930492460727692,
+      "legacy_best_layer": 22
+    },
+    {
+      "axis": "positive_anticipation",
+      "category": "appraisal",
+      "last_writer_layer": 42,
+      "reader_layer": 44,
+      "strict_cross_scene_style_spearman": 0.9126983880996704,
+      "endpoint_half_span": 13.22498893737793,
+      "legacy_best_layer": 42
+    },
+    {
+      "axis": "possessiveness",
+      "category": "relational",
+      "last_writer_layer": 41,
+      "reader_layer": 42,
+      "strict_cross_scene_style_spearman": 0.89682537317276,
+      "endpoint_half_span": 10.279263019561768,
+      "legacy_best_layer": 41
+    },
+    {
+      "axis": "pride",
+      "category": "relational",
+      "last_writer_layer": 40,
+      "reader_layer": 41,
+      "strict_cross_scene_style_spearman": 0.8928571343421936,
+      "endpoint_half_span": 15.13431167602539,
+      "legacy_best_layer": 33
+    },
+    {
+      "axis": "relational_connection",
+      "category": "relational",
+      "last_writer_layer": 41,
+      "reader_layer": 59,
+      "strict_cross_scene_style_spearman": 0.8849206566810608,
+      "endpoint_half_span": 0.5823121070861816,
+      "legacy_best_layer": 32
+    },
+    {
+      "axis": "resentment",
+      "category": "relational",
+      "last_writer_layer": 58,
+      "reader_layer": 59,
+      "strict_cross_scene_style_spearman": 0.7658730149269104,
+      "endpoint_half_span": 0.442124605178833,
+      "legacy_best_layer": 58
+    },
+    {
+      "axis": "sadness",
+      "category": "basic_affect",
+      "last_writer_layer": 58,
+      "reader_layer": 59,
+      "strict_cross_scene_style_spearman": 0.8253968358039856,
+      "endpoint_half_span": 0.6605160236358643,
+      "legacy_best_layer": 33
+    },
+    {
+      "axis": "sexual_desire",
+      "category": "somatic",
+      "last_writer_layer": 42,
+      "reader_layer": 43,
+      "strict_cross_scene_style_spearman": 0.8571428656578064,
+      "endpoint_half_span": 15.848031997680664,
+      "legacy_best_layer": 21
+    },
+    {
+      "axis": "sexual_pleasure",
+      "category": "somatic",
+      "last_writer_layer": 45,
+      "reader_layer": 51,
+      "strict_cross_scene_style_spearman": 0.9722222089767456,
+      "endpoint_half_span": 15.850131332874298,
+      "legacy_best_layer": 45
+    },
+    {
+      "axis": "shame",
+      "category": "relational",
+      "last_writer_layer": 57,
+      "reader_layer": 58,
+      "strict_cross_scene_style_spearman": 0.9365079402923584,
+      "endpoint_half_span": 7.595638990402222,
+      "legacy_best_layer": 5
+    },
+    {
+      "axis": "shyness",
+      "category": "relational",
+      "last_writer_layer": 58,
+      "reader_layer": 59,
+      "strict_cross_scene_style_spearman": 0.7777777910232544,
+      "endpoint_half_span": 0.6570515632629395,
+      "legacy_best_layer": 30
+    },
+    {
+      "axis": "surprise",
+      "category": "basic_affect",
+      "last_writer_layer": 45,
+      "reader_layer": 58,
+      "strict_cross_scene_style_spearman": 0.9365079402923584,
+      "endpoint_half_span": 7.427289724349976,
+      "legacy_best_layer": 39
+    },
+    {
+      "axis": "trust",
+      "category": "relational",
+      "last_writer_layer": 50,
+      "reader_layer": 52,
+      "strict_cross_scene_style_spearman": 0.8769841194152832,
+      "endpoint_half_span": 11.98479175567627,
+      "legacy_best_layer": 22
+    }
+  ]
+}

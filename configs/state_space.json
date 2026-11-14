@@ -1,0 +1,183 @@
+{
+  "schema_version": 1,
+  "name": "Direct-44",
+  "source": "artifacts/gemma4-31b/writer/writer_manifest.json",
+  "axes": [
+    {
+      "name": "anger",
+      "category": "basic_affect"
+    },
+    {
+      "name": "anxiety",
+      "category": "basic_affect"
+    },
+    {
+      "name": "assertiveness",
+      "category": "motivation"
+    },
+    {
+      "name": "attachment_love",
+      "category": "relational"
+    },
+    {
+      "name": "behavioral_inhibition",
+      "category": "motivation"
+    },
+    {
+      "name": "behavioral_initiative",
+      "category": "motivation"
+    },
+    {
+      "name": "certainty",
+      "category": "appraisal"
+    },
+    {
+      "name": "curiosity",
+      "category": "appraisal"
+    },
+    {
+      "name": "disappointment",
+      "category": "appraisal"
+    },
+    {
+      "name": "disgust",
+      "category": "basic_affect"
+    },
+    {
+      "name": "empathy_compassion",
+      "category": "relational"
+    },
+    {
+      "name": "energy_vitality",
+      "category": "somatic"
+    },
+    {
+      "name": "erotic_absorption",
+      "category": "somatic"
+    },
+    {
+      "name": "erotic_initiative",
+      "category": "motivation"
+    },
+    {
+      "name": "fear",
+      "category": "basic_affect"
+    },
+    {
+      "name": "general_approach",
+      "category": "motivation"
+    },
+    {
+      "name": "general_arousal",
+      "category": "somatic"
+    },
+    {
+      "name": "gratitude",
+      "category": "relational"
+    },
+    {
+      "name": "hope",
+      "category": "appraisal"
+    },
+    {
+      "name": "hostility",
+      "category": "relational"
+    },
+    {
+      "name": "interoceptive_salience",
+      "category": "somatic"
+    },
+    {
+      "name": "jealousy",
+      "category": "relational"
+    },
+    {
+      "name": "joy",
+      "category": "basic_affect"
+    },
+    {
+      "name": "local_sexual_arousal",
+      "category": "somatic"
+    },
+    {
+      "name": "loneliness",
+      "category": "relational"
+    },
+    {
+      "name": "nociception",
+      "category": "somatic"
+    },
+    {
+      "name": "orgasmic_intensity",
+      "category": "somatic"
+    },
+    {
+      "name": "perceived_control",
+      "category": "appraisal"
+    },
+    {
+      "name": "persistence",
+      "category": "motivation"
+    },
+    {
+      "name": "physical_comfort",
+      "category": "somatic"
+    },
+    {
+      "name": "physical_relaxation",
+      "category": "somatic"
+    },
+    {
+      "name": "pleasure",
+      "category": "basic_affect"
+    },
+    {
+      "name": "positive_anticipation",
+      "category": "appraisal"
+    },
+    {
+      "name": "possessiveness",
+      "category": "relational"
+    },
+    {
+      "name": "pride",
+      "category": "relational"
+    },
+    {
+      "name": "relational_connection",
+      "category": "relational"
+    },
+    {
+      "name": "resentment",
+      "category": "relational"
+    },
+    {
+      "name": "sadness",
+      "category": "basic_affect"
+    },
+    {
+      "name": "sexual_desire",
+      "category": "somatic"
+    },
+    {
+      "name": "sexual_pleasure",
+      "category": "somatic"
+    },
+    {
+      "name": "shame",
+      "category": "relational"
+    },
+    {
+      "name": "shyness",
+      "category": "relational"
+    },
+    {
+      "name": "surprise",
+      "category": "basic_affect"
+    },
+    {
+      "name": "trust",
+      "category": "relational"
+    }
+  ]
+}

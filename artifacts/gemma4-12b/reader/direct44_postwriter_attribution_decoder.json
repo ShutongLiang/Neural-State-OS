@@ -1,0 +1,13 @@
+{
+  "created_at": "2026-08-05T06:13:41.084832+00:00",
+  "calibration": "artifacts/gemma4-12b/reader/direct44_postwriter_response_calibration.npz",
+  "output": "artifacts/gemma4-12b/reader/direct44_postwriter_attribution_decoder.npz",
+  "method": "Tikhonov-regularized inverse of the measured post-writer response matrix.  It attributes a raw writer_delta to slider equivalent source axes only; it is not an affect-state reader.",
+  "ridge": 0.00003,
+  "condition_number": 3785.610438987481,
+  "mean_matched_source_response": 0.8720615038664967,
+  "minimum_matched_source_response": 0.42884256882812843,
+  "heldout_context_top1": 87,
+  "heldout_context_top3": 88,
+  "heldout_context_trials": 88
+}

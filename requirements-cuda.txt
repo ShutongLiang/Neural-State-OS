@@ -1,0 +1,5 @@
+# Install the CUDA-enabled PyTorch build matching the host before this file.
+numpy>=1.26,<3
+transformers>=5.14.1,<6
+accelerate>=1.10,<2
+safetensors>=0.5,<1

@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Neural State OS · Direct-44</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0c0d11;
+      --panel: #15171e;
+      --panel-2: #1b1e27;
+      --panel-3: #242836;
+      --line: rgba(229, 229, 242, .10);
+      --line-strong: rgba(229, 229, 242, .17);
+      --text: #f1f2f7;
+      --muted: #959aaa;
+      --accent: #dc91c2;
+      --accent-bright: #f0acd5;
+      --accent-soft: rgba(220, 145, 194, .15);
+      --danger: #ed9b9e;
+      --drawer-width: 362px;
+      --shadow: 0 28px 70px rgba(0, 0, 0, .46);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 14px/1.55 -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { color: inherit; }
+    .app { height: 100dvh; overflow: hidden; }
+    .chat-shell { height: 100%; display: flex; flex-direction: column; min-width: 0; }
+
+    .chat-header {
+      height: 64px;
+      flex: 0 0 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 22px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(12, 13, 17, .92);
+      backdrop-filter: blur(18px);
+      z-index: 2;
+    }
+    .header-left, .header-right, .brand, .header-controls { display: flex; align-items: center; }
+    .header-left { gap: 12px; min-width: 0; }
+    .header-right { gap: 10px; }
+    .brand { gap: 10px; min-width: 0; }
+    .avatar {
+      width: 32px; height: 32px; display: grid; place-items: center;
+      border: 1px solid rgba(240, 172, 213, .34); border-radius: 11px;
+      background: linear-gradient(145deg, #5f365b, #2b2537); color: var(--accent-bright);
+      font-weight: 700;
+    }
+    .brand-title { font-size: 15px; font-weight: 680; letter-spacing: .01em; }
+    .brand-subtitle { color: var(--muted); font-size: 11px; }
+    .connection { color: var(--muted); font-size: 12px; white-space: nowrap; }
+    .connection.ready::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 6px; border-radius: 99px; background: #86d4ac; }
+
+    .button, .icon-button, .mini-button, .mode-select, .number-input, .scope-select {
+      border: 1px solid var(--line); background: var(--panel-2); border-radius: 10px;
+    }
+    .button, .icon-button, .mini-button { cursor: pointer; transition: background .16s ease, border-color .16s ease, transform .16s ease; }
+    .button:hover, .icon-button:hover, .mini-button:hover { background: var(--panel-3); border-color: var(--line-strong); }
+    .button:active, .icon-button:active, .mini-button:active { transform: translateY(1px); }
+    .button { padding: 8px 11px; }
+    .icon-button { width: 34px; height: 34px; display: grid; place-items: center; padding: 0; font-size: 17px; }
+    .button.ghost { color: var(--muted); }
+    .button.primary { color: #2a1723; background: var(--accent); border-color: var(--accent); font-weight: 720; min-width: 92px; }
+    .button.primary:hover { background: var(--accent-bright); }
+    .button:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .mode-select, .scope-select { padding: 7px 9px; color: var(--text); outline: none; }
+    .mode-select { max-width: 118px; }
+
+    .messages {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+      overscroll-behavior: contain;
+      scrollbar-gutter: stable;
+      padding: 34px clamp(18px, 7vw, 110px);
+    }
+    .conversation { width: min(820px, 100%); margin: 0 auto; }
+    .empty-state { max-width: 550px; margin: 18vh auto 0; color: var(--muted); text-align: center; }
+    .empty-state strong { display: block; color: var(--text); font-size: 17px; font-weight: 650; margin-bottom: 7px; }
+    .message { width: fit-content; max-width: min(78ch, 88%); margin: 0 0 22px; }
+    .message.user { margin-left: auto; }
+    .message-meta { display: flex; gap: 7px; align-items: center; margin: 0 3px 5px; color: var(--muted); font-size: 11px; }
+    .user .message-meta { justify-content: flex-end; }
+    .message-bubble { padding: 11px 14px; border: 1px solid var(--line); border-radius: 15px; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .assistant .message-bubble { background: var(--panel); border-top-left-radius: 5px; }
+    .user .message-bubble { background: #2a2130; border-color: rgba(220, 145, 194, .25); border-top-right-radius: 5px; }
+    .message.error .message-bubble { color: var(--danger); border-color: rgba(237, 155, 158, .35); }
+    .typing { color: var(--muted); }
+
+    .composer-wrap { flex: 0 0 auto; padding: 10px clamp(18px, 7vw, 110px) 18px; border-top: 1px solid var(--line); background: rgba(12, 13, 17, .94); backdrop-filter: blur(18px); }
+    .composer { width: min(820px, 100%); margin: 0 auto; }
+    .state-strip { display: flex; align-items: center; gap: 7px; min-height: 27px; padding: 0 2px 7px; overflow: hidden; white-space: nowrap; }
+    .state-label { color: var(--muted); font-size: 12px; }
+    .state-chip { flex: 0 0 auto; padding: 2px 7px; border: 1px solid var(--line); border-radius: 99px; color: #d8c6d3; background: var(--accent-soft); font-size: 11px; }
+    .state-strip.empty .state-chip { display: none; }
+    .input-frame { display: flex; align-items: end; gap: 9px; padding: 8px 8px 8px 13px; background: var(--panel); border: 1px solid var(--line-strong); border-radius: 15px; transition: border-color .18s ease, box-shadow .18s ease; }
+    .input-frame:focus-within { border-color: rgba(220, 145, 194, .62); box-shadow: 0 0 0 3px rgba(220, 145, 194, .10); }
+    textarea { flex: 1; max-height: 190px; min-height: 26px; padding: 4px 0; resize: none; outline: none; border: 0; background: transparent; color: var(--text); line-height: 1.55; }
+    textarea::placeholder { color: #747987; }
+    .composer-footer { display: flex; justify-content: space-between; gap: 14px; padding: 7px 3px 0; color: var(--muted); font-size: 11px; }
+    .readout-panel { width: 100%; padding: 9px 11px; border: 1px solid var(--line); border-radius: 12px; background: rgba(21, 23, 30, .82); }
+    .readout-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .readout-controls { display: flex; align-items: center; gap: 7px; margin-top: 10px; }
+    .readout-controls label { color: var(--muted); font-size: 11px; white-space: nowrap; }
+    .readout-select { flex: 1; width: auto; margin-top: 0; font-size: 11px; }
+    .readout-title { font-size: 12px; font-weight: 680; }
+    .readout-phase { color: var(--muted); font-size: 11px; text-align: right; }
+    .readout-summary { margin-top: 4px; color: var(--muted); font-size: 11px; }
+    .readout-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; margin-top: 8px; }
+    .readout-card { min-width: 0; padding: 7px 8px; border: 1px solid var(--line); border-radius: 9px; background: rgba(255,255,255,.018); }
+    .readout-card-label { overflow: hidden; color: #dbdce5; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+    .readout-card-values { margin-top: 2px; color: var(--muted); font-size: 10px; white-space: nowrap; }
+    .readout-value { color: var(--accent-bright); }
+    .readout-delta.negative { color: #93b5e5; }
+    .readout-delta.positive { color: #efb1d4; }
+    .readout-details { margin-top: 8px; color: var(--muted); font-size: 11px; }
+    .readout-details summary { cursor: pointer; user-select: none; }
+    .readout-all { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 10px; padding-top: 8px; }
+    .readout-row { display: flex; min-width: 0; justify-content: space-between; gap: 7px; padding: 3px 0; border-bottom: 1px solid rgba(229,229,242,.05); font-size: 10px; }
+    .readout-row-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .drawer-backdrop { position: fixed; inset: 0; z-index: 9; background: rgba(0, 0, 0, .36); opacity: 0; pointer-events: none; transition: opacity .22s ease; }
+    .state-drawer {
+      position: fixed; inset: 0 auto 0 0; z-index: 10; width: min(var(--drawer-width), 91vw);
+      display: flex; flex-direction: column; background: #12141b; border-right: 1px solid var(--line-strong);
+      box-shadow: var(--shadow); transform: translateX(-104%); transition: transform .24s cubic-bezier(.22, .8, .28, 1);
+    }
+    body.drawer-open, body.readout-open { overflow: hidden; }
+    body.drawer-open .state-drawer { transform: translateX(0); }
+    body.drawer-open .drawer-backdrop, body.readout-open .drawer-backdrop { opacity: 1; pointer-events: auto; }
+    .drawer-header { flex: 0 0 auto; padding: 17px 16px 14px; border-bottom: 1px solid var(--line); }
+    .drawer-title-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .drawer-title { font-size: 16px; font-weight: 720; }
+    .drawer-subtitle { margin-top: 3px; color: var(--muted); font-size: 11px; }
+    .drawer-actions { display: flex; gap: 7px; margin-top: 13px; }
+    .drawer-actions .button { flex: 1; font-size: 12px; padding: 7px 8px; }
+    .drawer-tools { padding: 12px 16px; border-bottom: 1px solid var(--line); }
+    .search-wrap { position: relative; }
+    .search-wrap span { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+    .search-input { width: 100%; padding: 8px 10px 8px 30px; color: var(--text); outline: none; border: 1px solid var(--line); border-radius: 9px; background: var(--panel-2); }
+    .search-input:focus { border-color: rgba(220, 145, 194, .55); }
+    .drawer-summary { display: flex; align-items: center; gap: 6px; min-height: 24px; margin-top: 9px; overflow: hidden; white-space: nowrap; }
+    .drawer-summary-label { color: var(--muted); font-size: 11px; }
+    .drawer-summary .state-chip { max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
+    .axis-groups { flex: 1 1 auto; min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 8px 11px 28px; }
+    .axis-group { margin-bottom: 7px; border: 1px solid var(--line); border-radius: 11px; background: rgba(255, 255, 255, .015); overflow: hidden; }
+    .axis-group[hidden], .axis-control[hidden] { display: none; }
+    .axis-group summary { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 11px; cursor: pointer; list-style: none; user-select: none; color: #d9dbe4; font-size: 12px; font-weight: 650; }
+    .axis-group summary::-webkit-details-marker { display: none; }
+    .axis-group summary::after { content: "⌄"; color: var(--muted); transform: rotate(-90deg); transition: transform .15s ease; }
+    .axis-group[open] summary::after { transform: rotate(0); }
+    .axis-count { margin-left: auto; color: var(--muted); font-weight: 500; }
+    .axis-list { padding: 0 9px 9px; }
+    .axis-control { padding: 10px 2px 12px; border-top: 1px solid var(--line); }
+    .axis-control:first-child { border-top: 0; }
+    .axis-head { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+    .axis-name { min-width: 0; color: #e3e4eb; font-size: 13px; }
+    .layer { color: var(--muted); font-size: 10px; margin-left: 4px; }
+    .number-input { width: 64px; padding: 4px 6px; color: var(--text); text-align: right; outline: none; }
+    .number-input:focus { border-color: rgba(220, 145, 194, .6); }
+    .range-row { display: grid; grid-template-columns: 26px minmax(0, 1fr) 26px; align-items: center; gap: 7px; margin-top: 8px; }
+    .mini-button { width: 26px; height: 25px; padding: 0; color: var(--muted); }
+    input[type="range"] {
+      width: 100%; height: 16px; appearance: none; -webkit-appearance: none; cursor: pointer; outline: none;
+      background: transparent;
+    }
+    input[type="range"]::-webkit-slider-runnable-track { height: 4px; border-radius: 99px; background: linear-gradient(90deg, #536070 0%, #536070 50%, var(--accent) 50%, var(--accent) var(--value), #536070 var(--value), #536070 100%); }
+    input[type="range"]::-webkit-slider-thumb { width: 15px; height: 15px; margin-top: -5.5px; border: 2px solid #f7e9f2; border-radius: 50%; appearance: none; -webkit-appearance: none; background: var(--accent); box-shadow: 0 1px 5px rgba(0,0,0,.45); }
+    input[type="range"]::-moz-range-track { height: 4px; border-radius: 99px; background: #536070; }
+    input[type="range"]::-moz-range-progress { height: 4px; background: var(--accent); }
+    input[type="range"]::-moz-range-thumb { width: 12px; height: 12px; border: 2px solid #f7e9f2; border-radius: 50%; background: var(--accent); }
+    .axis-scale { display: flex; justify-content: space-between; margin: 2px 32px 0; color: #727889; font-size: 10px; }
+    .advanced { margin: 7px 11px 0; border: 1px solid var(--line); border-radius: 10px; }
+    .advanced summary { padding: 9px 10px; color: var(--muted); cursor: pointer; font-size: 11px; }
+    .advanced-inner { padding: 0 10px 10px; }
+    .advanced label { display: block; color: var(--muted); font-size: 11px; }
+    .prompt-text { display: block; width: 100%; min-height: 92px; margin-top: 7px; padding: 8px 9px; resize: vertical; color: var(--text); background: #11141b; border: 1px solid var(--line); border-radius: 8px; font: 12px/1.45 inherit; }
+    .prompt-note { margin: 7px 0 0; color: #8f95a5; font-size: 10px; line-height: 1.45; }
+    .prompt-actions { display: flex; justify-content: flex-end; margin-top: 8px; }
+    .prompt-actions .mini-button { padding: 4px 8px; font-size: 11px; }
+    .scope-select { width: 100%; margin-top: 5px; color: var(--text); }
+    .mix-setting { margin-top: 11px; padding-top: 10px; border-top: 1px solid var(--line); }
+    .mix-headroom { margin-top: 9px; }
+    .mix-headroom[hidden] { display: none; }
+    .mix-headroom-label { display: flex; justify-content: space-between; color: var(--muted); font-size: 11px; }
+    .mix-hint { margin: 7px 0 0; color: #8f95a5; font-size: 10px; line-height: 1.45; }
+
+    .readout-drawer {
+      position: fixed; inset: 0 0 0 auto; z-index: 10; width: min(var(--drawer-width), 91vw);
+      display: flex; flex-direction: column; background: #12141b; border-left: 1px solid var(--line-strong);
+      box-shadow: var(--shadow); transform: translateX(104%); transition: transform .24s cubic-bezier(.22, .8, .28, 1);
+    }
+    body.readout-open .readout-drawer { transform: translateX(0); }
+    .readout-body { flex: 1 1 auto; min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 12px 11px 28px; }
+
+    @media (max-width: 700px) {
+      .chat-header { height: 58px; flex-basis: 58px; padding: 0 13px; }
+      .brand-subtitle, .connection { display: none; }
+      .header-right { gap: 6px; }
+      .mode-select { width: 94px; }
+      .messages { padding: 23px 14px; }
+      .message { max-width: 94%; }
+      .composer-wrap { padding: 8px 12px 13px; }
+      .composer-footer span:last-child { display: none; }
+      .drawer-actions { gap: 5px; }
+      .readout-all { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <aside class="state-drawer" id="drawer" aria-label="Internal-state controls">
+      <header class="drawer-header">
+        <div class="drawer-title-row">
+          <div>
+            <div class="drawer-title">Internal state</div>
+            <div class="drawer-subtitle" id="drawerStatus">Loading 44 state axes…</div>
+          </div>
+          <button class="icon-button" id="drawerClose" aria-label="Close state panel">×</button>
+        </div>
+        <div class="drawer-actions">
+          <button class="button ghost" id="zero">Reset all</button>
+          <button class="button" id="minus">Affect preset −4</button>
+          <button class="button" id="plus">Affect preset +4</button>
+        </div>
+      </header>
+      <section class="drawer-tools">
+        <label class="search-wrap">
+          <span>⌕</span>
+          <input id="axisSearch" class="search-input" type="search" autocomplete="off" placeholder="Search axes: jealousy, pleasure, energy…">
+        </label>
+        <div class="drawer-summary" id="drawerSummary"></div>
+      </section>
+      <section class="axis-groups" id="axes"></section>
+      <details class="advanced">
+        <summary>System prompt</summary>
+        <div class="advanced-inner">
+          <label for="systemPrompt">Applies to subsequent requests in this session</label>
+          <textarea id="systemPrompt" class="prompt-text" maxlength="4000" aria-label="System prompt">You are a local language model running under Neural State OS. Respond naturally and directly in the first person.</textarea>
+          <p class="prompt-note">The prompt is not written to model weights or server storage. Clear the conversation after changing it to avoid mixing contexts.</p>
+          <div class="prompt-actions"><button class="mini-button" id="resetSystemPrompt" type="button">Restore default</button></div>
+        </div>
+      </details>
+      <details class="advanced">
+        <summary>Advanced modulation</summary>
+        <div class="advanced-inner">
+          <label>Write scope
+            <select id="scope" class="scope-select" aria-label="Write scope">
+              <option value="all_tokens">all_tokens · full context</option>
+              <option value="last_token">last_token · final position</option>
+              <option value="generation_only">generation_only</option>
+            </select>
+          </label>
+          <div class="mix-setting">
+            <label>Axis composition
+              <select id="mixMode" class="scope-select" aria-label="Axis-composition mode">
+                <option value="raw">Raw vector addition</option>
+                <option value="rms_cap">Shared-layer RMS cap</option>
+              </select>
+            </label>
+            <div id="mixHeadroomWrap" class="mix-headroom" hidden>
+              <div class="mix-headroom-label"><span>Layer headroom</span><span id="mixHeadroomValue">1.35× RMS</span></div>
+              <input id="mixHeadroom" type="range" min="1" max="2.5" step="0.05" value="1.35" aria-label="Shared-layer headroom">
+            </div>
+            <p id="mixHint" class="mix-hint">Adds calibrated directions without cross-axis normalization.</p>
+          </div>
+        </div>
+      </details>
+    </aside>
+    <aside class="readout-drawer" id="readoutDrawer" aria-label="Hidden-state readout">
+      <header class="drawer-header">
+        <div class="drawer-title-row">
+          <div>
+            <div class="drawer-title">Hidden-state readout</div>
+            <div class="drawer-subtitle" id="readoutDrawerStatus">Waiting for the next message</div>
+          </div>
+          <button class="icon-button" id="readoutClose" aria-label="Close hidden-state readout">×</button>
+        </div>
+      </header>
+      <div class="readout-body">
+        <section class="readout-panel" id="readoutPanel" aria-live="polite">
+          <div class="readout-head">
+            <span class="readout-title">After message · before generation</span>
+            <span class="readout-phase" id="readoutPhase">Waiting</span>
+          </div>
+          <div class="readout-controls">
+            <label for="readoutMode">View</label>
+            <select id="readoutMode" class="scope-select readout-select" aria-label="Readout view">
+              <option value="state" selected>Raw Direct-44 state</option>
+              <option value="chat_state">Chat-domain pilot · 3 axes</option>
+              <option value="attribution">Writer-source attribution</option>
+            </select>
+          </div>
+          <div class="readout-summary" id="readoutSummary">Paired passes compare the same prompt with modulation off and on.</div>
+          <div class="readout-cards" id="readoutCards"></div>
+          <details class="readout-details">
+            <summary id="readoutDetailsTitle">Show all 44 axes</summary>
+            <div class="readout-all" id="readoutAll"></div>
+          </details>
+        </section>
+      </div>
+    </aside>
+    <div class="drawer-backdrop" id="drawerBackdrop"></div>
+
+    <section class="chat-shell">
+      <header class="chat-header">
+        <div class="header-left">
+          <button class="icon-button" id="drawerToggle" aria-label="Open state panel">☰</button>
+          <div class="brand">
+            <div class="avatar">N</div>
+            <div>
+              <div class="brand-title">Neural State OS</div>
+              <div class="brand-subtitle">Gemma 4 · Direct-44 runtime</div>
+            </div>
+          </div>
+        </div>
+        <div class="header-right">
+          <span class="connection" id="status">Connecting</span>
+          <select id="thinking" class="mode-select" aria-label="Response mode">
+            <option value="false">Direct</option>
+            <option value="true">Reasoning</option>
+          </select>
+          <button class="icon-button" id="readoutToggle" aria-label="Open hidden-state readout" title="Hidden-state readout">⌁</button>
+          <button class="button ghost" id="clear">Clear</button>
+        </div>
+      </header>
+
+      <section class="messages" id="messages" aria-live="polite">
+        <div class="conversation" id="conversation">
+          <div class="empty-state" id="emptyState">
+            <strong>Start from a neutral baseline</strong>
+            No state direction is active. Open the state panel to modulate the local model before chatting.
+          </div>
+        </div>
+      </section>
+
+      <footer class="composer-wrap">
+        <form class="composer" id="form">
+          <div class="state-strip empty" id="stateStrip"><span class="state-label">State: neutral baseline</span></div>
+          <div class="input-frame">
+            <textarea id="input" rows="1" placeholder="Message the local model…" aria-label="Message"></textarea>
+            <button class="button primary" id="send" type="submit">Send</button>
+          </div>
+          <div class="composer-footer"><span id="context">0 context messages</span><span>Enter to send · Shift + Enter for a new line</span></div>
+        </form>
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    const el = id => document.getElementById(id);
+    const messages = el('messages');
+    const conversation = el('conversation');
+    const input = el('input');
+    const systemPrompt = el('systemPrompt');
+    const activeAxisNames = ['joy', 'pleasure', 'positive_anticipation'];
+    const categoryOrder = ['Somatic', 'Basic affect', 'Relational', 'Appraisal', 'Motivation'];
+    let axes = [];
+    let state = {};
+    let session = crypto.randomUUID();
+    let activeController = null;
+    let lastReadout = null;
+
+    function clamp(value) { return Math.max(-20, Math.min(20, Number(value) || 0)); }
+    function axisDisplay(axis) { return `${axis.label} ${state[axis.name] >= 0 ? '+' : ''}${state[axis.name].toFixed(1)}`; }
+    function activeAxes() { return axes.filter(axis => Math.abs(state[axis.name] || 0) > .0001); }
+    function scrollToBottom(force = false) {
+      const nearBottom = messages.scrollHeight - messages.scrollTop - messages.clientHeight < 100;
+      if (force || nearBottom) messages.scrollTop = messages.scrollHeight;
+    }
+    function resizeInput() {
+      input.style.height = 'auto';
+      input.style.height = `${Math.min(input.scrollHeight, 190)}px`;
+    }
+    function mixProtection() {
+      return { mode: el('mixMode').value, headroom: Number(el('mixHeadroom').value) };
+    }
+    function signed(value) {
+      const number = Number(value) || 0;
+      return `${number >= 0 ? '+' : ''}${number.toFixed(2)}`;
+    }
+    function renderEmotionReadout(readout) {
+      const panel = el('readoutPanel');
+      const phase = el('readoutPhase');
+      const summary = el('readoutSummary');
+      const cards = el('readoutCards');
+      const all = el('readoutAll');
+      const detailsTitle = el('readoutDetailsTitle');
+      if (!readout || !readout.enabled) {
+        phase.textContent = 'Reader unavailable';
+        summary.textContent = 'No compatible Direct-44 hidden-state reader is loaded.';
+        cards.replaceChildren(); all.replaceChildren();
+        detailsTitle.textContent = 'Show readout';
+        el('readoutDrawerStatus').textContent = 'Reader unavailable';
+        return;
+      }
+      cards.replaceChildren(); all.replaceChildren();
+      if (readout.phase === 'reading') {
+        phase.textContent = 'Reading post-message state…';
+        summary.textContent = 'Running paired passes on the same prompt with modulation off and on.';
+        el('readoutDrawerStatus').textContent = 'Capturing hidden state…';
+        return;
+      }
+      if (readout.phase === 'reset') {
+        phase.textContent = 'Waiting';
+        summary.textContent = 'Context cleared. The next message will be read before generation.';
+        el('readoutDrawerStatus').textContent = 'Waiting for the next message';
+        return;
+      }
+      lastReadout = readout;
+      phase.textContent = `After message · before generation${readout.elapsed_seconds ? ` · ${readout.elapsed_seconds}s` : ''}`;
+      el('readoutDrawerStatus').textContent = `Readout complete${readout.elapsed_seconds ? ` · ${readout.elapsed_seconds}s` : ''}`;
+      const values = readout.values || {};
+      const observed = readout.top_observed || [];
+      const attribution = readout.writer_attribution || {};
+      const chatState = readout.chat_state_disentangled || {};
+      const chatValues = chatState.values || {};
+      const mode = el('readoutMode').value;
+      const experimentKey = mode === 'persona_experiment' ? 'persona' : (mode === 'sae_experiment' ? 'sae' : null);
+      const experiment = experimentKey ? readout.experimental_probes?.[experimentKey] : null;
+      const useExperiment = Boolean(experiment?.enabled);
+      const experimentValues = experiment?.values || {};
+      const useAttribution = !useExperiment && mode === 'attribution' && Object.keys(attribution).length > 0;
+      const useChatState = !useExperiment && mode === 'chat_state' && Boolean(chatState.enabled) && Object.keys(chatValues).length > 0;
+      const ordered = useExperiment
+        ? (experiment.top_observed || [])
+        : useAttribution
+        ? (readout.top_writer_attribution || [])
+        : (useChatState ? (chatState.top || []) : observed);
+      const first = ordered.slice(0, 4);
+      detailsTitle.textContent = useExperiment
+        ? `Show all ${Object.keys(experimentValues).length} readout axes`
+        : 'Show all 44 axes';
+      summary.textContent = useExperiment
+        ? `${experiment.label}: ${experiment.note} Strongest signals: ${first.length ? first.map(name => `${axes.find(axis => axis.name === name)?.label || name} ${signed(experimentValues[name]?.value)}`).join(' · ') : 'none'}. ${experiment.scale || ''}`
+        : useAttribution
+        ? (first.length
+          ? `${readout.writer_attribution_note || 'Attribution covers only this turn’s write.'} Strongest sources: ${first.map(name => `${axes.find(axis => axis.name === name)?.label || name} ${signed(attribution[name])}`).join(' · ')}`
+          : 'No attributable writer delta detected.')
+        : (useChatState
+          ? (first.length
+            ? `${chatState.note || 'Chat-domain calibrated state.'} Current: ${first.map(name => `${axes.find(axis => axis.name === name)?.label || name} ${signed(chatValues[name])}`).join(' · ')}`
+            : 'The chat-domain pilot found no marked state.')
+          : (first.length
+          ? `Hidden state after receiving the message and before generation. Co-activation is preserved. Strongest signals: ${first.map(name => `${axes.find(axis => axis.name === name)?.label || name} ${signed(values[name]?.value)}`).join(' · ')}. Writer Δ isolates this turn’s intervention.`
+          : 'No marked internal-state signal detected.'));
+      for (const name of first) {
+        const info = useExperiment ? (experimentValues[name] || {}) : (values[name] || {});
+        const axis = axes.find(item => item.name === name);
+        const card = document.createElement('div'); card.className = 'readout-card';
+        const label = document.createElement('div'); label.className = 'readout-card-label'; label.textContent = axis?.label || name;
+        const detail = document.createElement('div'); detail.className = 'readout-card-values';
+        const current = document.createElement('span'); current.className = 'readout-value';
+        current.textContent = useExperiment ? `score ${signed(info.value)}` : (useAttribution ? `source ${signed(attribution[name])}` : (useChatState ? `calibrated ${signed(chatValues[name])}` : `state ${signed(info.value)}`));
+        const separator = document.createTextNode(' · ');
+        const delta = document.createElement('span');
+        delta.className = useExperiment ? 'readout-delta' : `readout-delta ${(Number(info.writer_delta) || 0) >= 0 ? 'positive' : 'negative'}`;
+        delta.textContent = useExperiment ? `L${info.layer}${info.feature !== undefined ? ` · F${info.feature}` : ''}` : (useAttribution ? `raw Δ ${signed(info.writer_delta)}` : (useChatState ? `raw ${signed(info.raw_value)}` : `writer Δ ${signed(info.writer_delta)}`));
+        detail.append(current, separator, delta); card.append(label, detail); cards.append(card);
+      }
+      const allAxes = useExperiment
+        ? [...new Set([...ordered, ...Object.keys(experimentValues)])]
+        : useAttribution
+        ? [...new Set([...ordered, ...Object.keys(attribution)])]
+        : (useChatState
+          ? [...new Set([...ordered, ...Object.keys(chatValues)])]
+          : [...new Set([...observed, ...ordered, ...Object.keys(values)])]);
+      for (const name of allAxes) {
+        const info = useExperiment ? (experimentValues[name] || {}) : (values[name] || {});
+        const axis = axes.find(item => item.name === name);
+        const row = document.createElement('div'); row.className = 'readout-row';
+        const label = document.createElement('span'); label.className = 'readout-row-name'; label.textContent = axis?.label || name;
+        const amount = document.createElement('span');
+        amount.textContent = useExperiment
+          ? `score ${signed(info.value)} / L${info.layer}${info.feature !== undefined ? ` F${info.feature}` : ''}`
+          : useAttribution
+          ? `source ${signed(attribution[name])} / Δ ${signed(info.writer_delta)}`
+          : (useChatState
+            ? `calibrated ${signed(chatValues[name])} / raw ${signed(info.raw_value)}`
+            : `state ${signed(info.value)} / Δ ${signed(info.writer_delta)}`);
+        row.append(label, amount); all.append(row);
+      }
+    }
+    function updateMixUI(applied = null) {
+      const mode = el('mixMode').value;
+      const headroom = Number(el('mixHeadroom').value);
+      el('mixHeadroomWrap').hidden = mode !== 'rms_cap';
+      el('mixHeadroomValue').textContent = `${headroom.toFixed(2)}× RMS`;
+      const hint = el('mixHint');
+      if (mode === 'raw') {
+        hint.textContent = 'Adds calibrated directions without cross-axis normalization.';
+        return;
+      }
+      if (applied && applied.mode === 'rms_cap') {
+        const count = applied.scaled_layers?.length || 0;
+        hint.textContent = count
+          ? `Scaled ${count} shared layers while preserving relative axis directions.`
+          : 'No layer exceeded the cap; all writes retained their requested strength.';
+        return;
+      }
+      hint.textContent = 'Caps only unusually constructive multi-axis sums on shared layers; single-axis writes are unchanged.';
+    }
+    function renderStateSummary() {
+      const active = activeAxes();
+      const summary = el('drawerSummary');
+      const strip = el('stateStrip');
+      const empty = el('emptyState');
+      summary.replaceChildren();
+      strip.replaceChildren();
+      if (!active.length) {
+        const drawerLabel = document.createElement('span');
+        drawerLabel.className = 'drawer-summary-label'; drawerLabel.textContent = 'Neutral baseline'; summary.append(drawerLabel);
+        const stripLabel = document.createElement('span');
+        stripLabel.className = 'state-label'; stripLabel.textContent = 'State: neutral baseline'; strip.append(stripLabel); strip.classList.add('empty');
+        if (empty) {
+          empty.replaceChildren();
+          const title = document.createElement('strong'); title.textContent = 'Start from a neutral baseline';
+          empty.append(title, document.createTextNode('No state direction is active. Open the state panel to modulate the local model before chatting.'));
+        }
+        return;
+      }
+      const drawerLabel = document.createElement('span');
+      drawerLabel.className = 'drawer-summary-label'; drawerLabel.textContent = `${active.length} active axes`;
+      summary.append(drawerLabel);
+      const stripLabel = document.createElement('span');
+      stripLabel.className = 'state-label'; stripLabel.textContent = `State · ${active.length} axes`;
+      strip.append(stripLabel); strip.classList.remove('empty');
+      for (const axis of active.slice(0, 4)) {
+        const makeChip = () => { const chip = document.createElement('span'); chip.className = 'state-chip'; chip.textContent = axisDisplay(axis); return chip; };
+        summary.append(makeChip()); strip.append(makeChip());
+      }
+      if (active.length > 4) {
+        const more = document.createElement('span'); more.className = 'state-chip'; more.textContent = `+${active.length - 4}`;
+        summary.append(more); strip.append(more.cloneNode(true));
+      }
+      if (empty) {
+        empty.replaceChildren();
+        const title = document.createElement('strong'); title.textContent = 'State modulation active';
+        empty.append(title, document.createTextNode(`${active.length} axes are non-zero. Start chatting or continue adjusting the controls.`));
+      }
+    }
+    function setAxis(axis, value) {
+      const next = clamp(value);
+      state[axis.name] = next;
+      const range = el(`range-${axis.name}`);
+      const number = el(`number-${axis.name}`);
+      if (range) { range.value = String(next); range.style.setProperty('--value', `${((next + 20) / 40) * 100}%`); }
+      if (number && document.activeElement !== number) number.value = next.toFixed(1);
+      renderStateSummary();
+    }
+    function makeAxisControl(axis) {
+      const row = document.createElement('article');
+      row.className = 'axis-control'; row.dataset.axis = axis.name; row.dataset.search = `${axis.label} ${axis.name}`.toLowerCase();
+      const head = document.createElement('div'); head.className = 'axis-head';
+      const name = document.createElement('span'); name.className = 'axis-name'; name.textContent = axis.label;
+      const layer = document.createElement('span'); layer.className = 'layer'; layer.textContent = `L${axis.layers.join('/')}`; name.append(layer);
+      const number = document.createElement('input'); number.className = 'number-input'; number.id = `number-${axis.name}`; number.type = 'number'; number.min = '-20'; number.max = '20'; number.step = '.1'; number.value = (state[axis.name] || 0).toFixed(1); number.setAttribute('aria-label', `${axis.label} value`);
+      head.append(name, number);
+      const rowControl = document.createElement('div'); rowControl.className = 'range-row';
+      const minus = document.createElement('button'); minus.className = 'mini-button'; minus.type = 'button'; minus.textContent = '−'; minus.setAttribute('aria-label', `Decrease ${axis.label} by 1`);
+      const range = document.createElement('input'); range.id = `range-${axis.name}`; range.type = 'range'; range.min = '-20'; range.max = '20'; range.step = '.1'; range.value = String(state[axis.name] || 0); range.setAttribute('aria-label', `${axis.label} slider`);
+      const plus = document.createElement('button'); plus.className = 'mini-button'; plus.type = 'button'; plus.textContent = '+'; plus.setAttribute('aria-label', `Increase ${axis.label} by 1`);
+      rowControl.append(minus, range, plus);
+      const scale = document.createElement('div'); scale.className = 'axis-scale'; scale.innerHTML = '<span>−20</span><span>0</span><span>+20</span>';
+      row.append(head, rowControl, scale);
+      range.addEventListener('input', () => setAxis(axis, range.value));
+      number.addEventListener('input', () => setAxis(axis, number.value));
+      number.addEventListener('change', () => setAxis(axis, number.value));
+      minus.addEventListener('click', () => setAxis(axis, (state[axis.name] || 0) - 1));
+      plus.addEventListener('click', () => setAxis(axis, (state[axis.name] || 0) + 1));
+      range.style.setProperty('--value', `${(((state[axis.name] || 0) + 20) / 40) * 100}%`);
+      return row;
+    }
+    function render(info) {
+      axes = info;
+      for (const axis of axes) if (!(axis.name in state)) state[axis.name] = 0;
+      const groups = new Map();
+      for (const axis of axes) {
+        const key = axis.category_label;
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key).push(axis);
+      }
+      const root = el('axes'); root.replaceChildren();
+      const names = [...groups.keys()].sort((a, b) => {
+        const ai = categoryOrder.indexOf(a), bi = categoryOrder.indexOf(b);
+        return (ai < 0 ? 99 : ai) - (bi < 0 ? 99 : bi);
+      });
+      names.forEach((groupName, index) => {
+        const rows = groups.get(groupName);
+        const details = document.createElement('details'); details.className = 'axis-group'; details.dataset.group = groupName; details.open = index < 2;
+        const summary = document.createElement('summary');
+        const title = document.createElement('span'); title.textContent = groupName;
+        const count = document.createElement('span'); count.className = 'axis-count'; count.textContent = `${rows.length} axes`;
+        summary.append(title, count);
+        const list = document.createElement('div'); list.className = 'axis-list';
+        rows.forEach(axis => list.append(makeAxisControl(axis)));
+        details.append(summary, list); root.append(details);
+      });
+      renderStateSummary();
+    }
+    function filterAxes() {
+      const query = el('axisSearch').value.trim().toLowerCase();
+      document.querySelectorAll('.axis-group').forEach(group => {
+        let visible = 0;
+        group.querySelectorAll('.axis-control').forEach(row => {
+          const match = !query || row.dataset.search.includes(query);
+          row.hidden = !match; if (match) visible += 1;
+        });
+        group.hidden = visible === 0;
+        if (query && visible) group.open = true;
+      });
+    }
+    function openDrawer(open) {
+      if (open) document.body.classList.remove('readout-open');
+      document.body.classList.toggle('drawer-open', open);
+      try { localStorage.setItem('neural-state-os-drawer-open', open ? '1' : '0'); } catch (_) {}
+      if (open) setTimeout(() => el('axisSearch').focus(), 190);
+    }
+    function openReadout(open) {
+      if (open) document.body.classList.remove('drawer-open');
+      document.body.classList.toggle('readout-open', open);
+    }
+    function addMessage(role, text = '') {
+      el('emptyState')?.remove();
+      const article = document.createElement('article'); article.className = `message ${role}`;
+      const meta = document.createElement('div'); meta.className = 'message-meta'; meta.textContent = role === 'user' ? 'You' : 'Model';
+      const bubble = document.createElement('div'); bubble.className = 'message-bubble'; bubble.textContent = text;
+      article.append(meta, bubble); conversation.append(article); scrollToBottom(true);
+      return { article, bubble };
+    }
+    function resetEmpty(message) {
+      conversation.replaceChildren();
+      const empty = document.createElement('div'); empty.className = 'empty-state'; empty.id = 'emptyState';
+      const title = document.createElement('strong'); title.textContent = 'New conversation';
+      empty.append(title, document.createTextNode(message)); conversation.append(empty);
+    }
+    async function status() {
+      try {
+        const response = await fetch('/api/status'); if (!response.ok) throw new Error('Status endpoint unavailable');
+        const data = await response.json(); render(data.axis_info);
+        const defaultSystemPrompt = data.default_system_prompt || 'You are a local language model running under Neural State OS. Respond naturally and directly in the first person.';
+        systemPrompt.dataset.defaultPrompt = defaultSystemPrompt;
+        if (!systemPrompt.dataset.userEdited) systemPrompt.value = defaultSystemPrompt;
+        const attributionEnabled = Boolean(data.emotion_reader?.writer_attribution?.enabled);
+        const chatStateEnabled = Boolean(data.emotion_reader?.chat_state_reader?.enabled);
+        const readoutMode = el('readoutMode');
+        readoutMode.querySelector('option[value="attribution"]').disabled = !attributionEnabled;
+        readoutMode.querySelector('option[value="chat_state"]').disabled = !chatStateEnabled;
+        if (!attributionEnabled && readoutMode.value === 'attribution') readoutMode.value = 'state';
+        if (!chatStateEnabled && readoutMode.value === 'chat_state') readoutMode.value = 'state';
+        const readerText = data.emotion_reader?.enabled ? ` · ${data.emotion_reader.axis_count}-axis readout` : '';
+        el('status').textContent = `Ready · ${data.axis_info.length} axes${readerText}`;
+        el('status').classList.add('ready');
+        el('drawerStatus').textContent = `${data.axis_info.length} axes · three depth-specific writes · ${data.weights.join(' / ')}`;
+      } catch (error) {
+        el('status').textContent = 'Disconnected';
+        el('drawerStatus').textContent = 'Cannot reach the local model server';
+      }
+    }
+    async function clearConversation() {
+      const response = await fetch('/api/reset', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ session_id: session }) });
+      const result = await response.json();
+      session = crypto.randomUUID();
+      resetEmpty('Context cleared. Axis values are preserved for the next turn.');
+      el('context').textContent = '0 context messages';
+      renderEmotionReadout(result.emotion_readout);
+      input.focus();
+    }
+    function setSending(sending) {
+      const button = el('send'); button.disabled = false; button.textContent = sending ? 'Stop' : 'Send';
+      button.classList.toggle('is-stop', sending);
+      input.placeholder = sending ? 'Model is generating…' : 'Message the local model…';
+    }
+    async function send(event) {
+      event.preventDefault();
+      if (activeController) { activeController.abort(); return; }
+      const text = input.value.trim(); if (!text) return;
+      input.value = ''; resizeInput();
+      addMessage('user', text);
+      const out = addMessage('assistant', ''); out.article.classList.add('typing');
+      activeController = new AbortController(); setSending(true);
+      try {
+        const response = await fetch('/api/chat/stream', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: activeController.signal,
+          body: JSON.stringify({ message: text, axes: state, thinking: el('thinking').value === 'true', session_id: session, modulation_scope: el('scope').value, mix_protection: mixProtection(), system_prompt: systemPrompt.value })
+        });
+        if (!response.ok) throw new Error(await response.text());
+        const reader = response.body.getReader(); const decoder = new TextDecoder(); let buffer = '';
+        for (;;) {
+          const { value, done } = await reader.read(); buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
+          const lines = buffer.split('\n'); buffer = lines.pop();
+          for (const line of lines) {
+            if (!line.trim()) continue; const item = JSON.parse(line);
+            if (item.type === 'start') { updateMixUI(item.mix_protection); renderEmotionReadout(item.emotion_readout); }
+            if (item.type === 'emotion_readout') renderEmotionReadout(item.emotion_readout);
+            if (item.type === 'snapshot') { out.bubble.textContent = item.answer; scrollToBottom(); }
+            if (item.type === 'done') { out.bubble.textContent = item.answer; el('context').textContent = `${item.context_messages} context messages`; renderEmotionReadout(item.emotion_readout); }
+          }
+          if (done) break;
+        }
+      } catch (error) {
+        if (error.name === 'AbortError') out.bubble.textContent = out.bubble.textContent || 'Generation stopped.';
+        else { out.article.classList.add('error'); out.bubble.textContent = `Request failed: ${error.message}`; }
+      } finally {
+        out.article.classList.remove('typing'); activeController = null; setSending(false); input.focus();
+      }
+    }
+    function zeroAxes() { axes.forEach(axis => setAxis(axis, 0)); }
+    function intimate(value) { axes.filter(axis => activeAxisNames.includes(axis.name)).forEach(axis => setAxis(axis, value)); }
+
+    el('form').addEventListener('submit', send);
+    input.addEventListener('input', resizeInput);
+    input.addEventListener('keydown', event => { if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); el('form').requestSubmit(); } });
+    el('drawerToggle').addEventListener('click', () => openDrawer(true));
+    el('drawerClose').addEventListener('click', () => openDrawer(false));
+    el('readoutToggle').addEventListener('click', () => openReadout(true));
+    el('readoutClose').addEventListener('click', () => openReadout(false));
+    el('readoutMode').addEventListener('change', () => { el('readoutMode').dataset.userSelected = '1'; if (lastReadout) renderEmotionReadout(lastReadout); });
+    el('drawerBackdrop').addEventListener('click', () => { openDrawer(false); openReadout(false); });
+    el('axisSearch').addEventListener('input', filterAxes);
+    el('mixMode').addEventListener('change', () => updateMixUI());
+    el('mixHeadroom').addEventListener('input', () => updateMixUI());
+    systemPrompt.addEventListener('input', () => { systemPrompt.dataset.userEdited = '1'; });
+    el('resetSystemPrompt').addEventListener('click', () => {
+      systemPrompt.value = systemPrompt.dataset.defaultPrompt || 'You are a local language model running under Neural State OS. Respond naturally and directly in the first person.';
+      delete systemPrompt.dataset.userEdited;
+      systemPrompt.focus();
+    });
+    el('zero').addEventListener('click', zeroAxes);
+    el('minus').addEventListener('click', () => intimate(-4));
+    el('plus').addEventListener('click', () => intimate(4));
+    el('clear').addEventListener('click', clearConversation);
+    try { openDrawer(localStorage.getItem('neural-state-os-drawer-open') === '1' || (localStorage.getItem('neural-state-os-drawer-open') === null && innerWidth > 1180)); } catch (_) {}
+    status(); updateMixUI(); resizeInput(); input.focus();
+  </script>
+</body>
+</html>

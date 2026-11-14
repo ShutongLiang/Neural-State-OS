@@ -1,0 +1,44 @@
+{
+  "created_at": "2026-08-05T14:42:36.034907+00:00",
+  "dataset": "data/chat_state_calibration_v1.jsonl",
+  "remote_url": "http://127.0.0.1:8777",
+  "prompt_domain": "fresh standard Neural State OS chat; no history, no writer, no generation",
+  "state_axes": [
+    "jealousy",
+    "anger",
+    "anxiety"
+  ],
+  "raw_feature_count": 44,
+  "record_count": 72,
+  "train_count": 52,
+  "eval_count": 20,
+  "daily_null_train_count": 10,
+  "method": "Daily-chat-centered, jointly regularized linear state decoder over the 44 raw Direct-44 reader scores. It is a pilot monitor for three axes, not a replacement for raw hidden-state observation.",
+  "ridge": 30.0,
+  "axes": {
+    "jealousy": {
+      "raw_eval_pair_wins": 3,
+      "eval_pair_count": 3,
+      "decoded_eval_pair_wins": 3,
+      "decoded_eval_threshold_accuracy": 0.85,
+      "decoded_eval_positive_mean": 0.2905561081086055,
+      "decoded_eval_negative_mean": 0.07352640156647745
+    },
+    "anger": {
+      "raw_eval_pair_wins": 2,
+      "eval_pair_count": 3,
+      "decoded_eval_pair_wins": 3,
+      "decoded_eval_threshold_accuracy": 0.85,
+      "decoded_eval_positive_mean": 0.4844245231183546,
+      "decoded_eval_negative_mean": 0.13928736361032074
+    },
+    "anxiety": {
+      "raw_eval_pair_wins": 3,
+      "eval_pair_count": 3,
+      "decoded_eval_pair_wins": 3,
+      "decoded_eval_threshold_accuracy": 0.9,
+      "decoded_eval_positive_mean": 0.45254116204709954,
+      "decoded_eval_negative_mean": 0.0737156885489574
+    }
+  }
+}

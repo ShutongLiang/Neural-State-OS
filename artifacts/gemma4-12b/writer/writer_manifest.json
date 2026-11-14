@@ -1,0 +1,642 @@
+{
+  "created_at": "2026-08-02T09:52:12.695645+00:00",
+  "bank": "artifacts/gemma4-12b/writer/direct44_raw_three_layer_writer.npz",
+  "source_candidate_bank": "not distributed (raw activation capture)",
+  "method": {
+    "data": "clean Direct-44 first-person factorial corpus only",
+    "directions": "raw factorial directions only",
+    "selection": "highest strict cross-scene/style reader score in each early/middle/late band",
+    "layer_weights": [
+      0.6000000238418579,
+      0.6000000238418579,
+      0.6000000238418579
+    ],
+    "scope": "all_tokens",
+    "included": [],
+    "explicitly_excluded": [
+      "legacy single-layer vectors",
+      "Hybrid/Core/Natural blends",
+      "subject/owner overlays",
+      "anti-assistant overlays",
+      "writer orthogonalization"
+    ]
+  },
+  "axes": [
+    {
+      "axis": "anger",
+      "category": "basic_affect",
+      "layers": [
+        15,
+        28,
+        32
+      ],
+      "strict_scores": [
+        0.841269850730896,
+        0.8730158805847168,
+        0.9126983880996704
+      ]
+    },
+    {
+      "axis": "anxiety",
+      "category": "basic_affect",
+      "layers": [
+        16,
+        27,
+        30
+      ],
+      "strict_scores": [
+        0.9047619104385376,
+        0.9642857313156128,
+        0.9682539701461792
+      ]
+    },
+    {
+      "axis": "assertiveness",
+      "category": "motivation",
+      "layers": [
+        19,
+        28,
+        31
+      ],
+      "strict_scores": [
+        0.8055555820465088,
+        0.920634925365448,
+        0.9285714030265808
+      ]
+    },
+    {
+      "axis": "attachment_love",
+      "category": "relational",
+      "layers": [
+        16,
+        22,
+        32
+      ],
+      "strict_scores": [
+        0.8928571343421936,
+        0.9682539701461792,
+        0.9642857313156128
+      ]
+    },
+    {
+      "axis": "behavioral_inhibition",
+      "category": "motivation",
+      "layers": [
+        15,
+        28,
+        32
+      ],
+      "strict_scores": [
+        0.8730158805847168,
+        0.9523809552192688,
+        0.9404761791229248
+      ]
+    },
+    {
+      "axis": "behavioral_initiative",
+      "category": "motivation",
+      "layers": [
+        16,
+        28,
+        30
+      ],
+      "strict_scores": [
+        0.8214285969734192,
+        0.8253968358039856,
+        0.8214285969734192
+      ]
+    },
+    {
+      "axis": "certainty",
+      "category": "appraisal",
+      "layers": [
+        16,
+        21,
+        35
+      ],
+      "strict_scores": [
+        0.8769841194152832,
+        0.8849206566810608,
+        0.8571428656578064
+      ]
+    },
+    {
+      "axis": "curiosity",
+      "category": "appraisal",
+      "layers": [
+        19,
+        28,
+        33
+      ],
+      "strict_scores": [
+        0.85317462682724,
+        0.920634925365448,
+        0.9007936716079712
+      ]
+    },
+    {
+      "axis": "disappointment",
+      "category": "appraisal",
+      "layers": [
+        17,
+        29,
+        31
+      ],
+      "strict_scores": [
+        0.89682537317276,
+        0.9722222089767456,
+        0.9722222089767456
+      ]
+    },
+    {
+      "axis": "disgust",
+      "category": "basic_affect",
+      "layers": [
+        14,
+        26,
+        30
+      ],
+      "strict_scores": [
+        0.9365079402923584,
+        0.9404761791229248,
+        0.9007936716079712
+      ]
+    },
+    {
+      "axis": "empathy_compassion",
+      "category": "relational",
+      "layers": [
+        14,
+        27,
+        30
+      ],
+      "strict_scores": [
+        0.9484127163887024,
+        0.9246031641960144,
+        0.8809523582458496
+      ]
+    },
+    {
+      "axis": "energy_vitality",
+      "category": "somatic",
+      "layers": [
+        16,
+        28,
+        31
+      ],
+      "strict_scores": [
+        0.908730149269104,
+        0.9246031641960144,
+        0.9047619104385376
+      ]
+    },
+    {
+      "axis": "erotic_absorption",
+      "category": "somatic",
+      "layers": [
+        14,
+        29,
+        30
+      ],
+      "strict_scores": [
+        0.920634925365448,
+        0.9404761791229248,
+        0.9444444179534912
+      ]
+    },
+    {
+      "axis": "erotic_initiative",
+      "category": "motivation",
+      "layers": [
+        16,
+        27,
+        33
+      ],
+      "strict_scores": [
+        0.841269850730896,
+        0.8809523582458496,
+        0.8888888955116272
+      ]
+    },
+    {
+      "axis": "fear",
+      "category": "basic_affect",
+      "layers": [
+        13,
+        28,
+        30
+      ],
+      "strict_scores": [
+        0.9047619104385376,
+        0.932539701461792,
+        0.9126983880996704
+      ]
+    },
+    {
+      "axis": "general_approach",
+      "category": "motivation",
+      "layers": [
+        15,
+        22,
+        31
+      ],
+      "strict_scores": [
+        0.9563491940498352,
+        0.9523809552192688,
+        0.9523809552192688
+      ]
+    },
+    {
+      "axis": "general_arousal",
+      "category": "somatic",
+      "layers": [
+        16,
+        20,
+        31
+      ],
+      "strict_scores": [
+        0.908730149269104,
+        0.8809523582458496,
+        0.9047619104385376
+      ]
+    },
+    {
+      "axis": "gratitude",
+      "category": "relational",
+      "layers": [
+        15,
+        27,
+        31
+      ],
+      "strict_scores": [
+        0.8650793433189392,
+        0.9523809552192688,
+        0.9285714030265808
+      ]
+    },
+    {
+      "axis": "hope",
+      "category": "appraisal",
+      "layers": [
+        15,
+        27,
+        33
+      ],
+      "strict_scores": [
+        0.8888888955116272,
+        0.920634925365448,
+        0.9126983880996704
+      ]
+    },
+    {
+      "axis": "hostility",
+      "category": "relational",
+      "layers": [
+        15,
+        27,
+        31
+      ],
+      "strict_scores": [
+        0.8809523582458496,
+        0.9563491940498352,
+        0.9523809552192688
+      ]
+    },
+    {
+      "axis": "interoceptive_salience",
+      "category": "somatic",
+      "layers": [
+        16,
+        29,
+        30
+      ],
+      "strict_scores": [
+        0.8650793433189392,
+        0.8888888955116272,
+        0.9166666865348816
+      ]
+    },
+    {
+      "axis": "jealousy",
+      "category": "relational",
+      "layers": [
+        16,
+        21,
+        30
+      ],
+      "strict_scores": [
+        0.9603174328804016,
+        0.9285714030265808,
+        0.8452380895614624
+      ]
+    },
+    {
+      "axis": "joy",
+      "category": "basic_affect",
+      "layers": [
+        17,
+        24,
+        30
+      ],
+      "strict_scores": [
+        0.9365079402923584,
+        0.9523809552192688,
+        0.920634925365448
+      ]
+    },
+    {
+      "axis": "local_sexual_arousal",
+      "category": "somatic",
+      "layers": [
+        16,
+        25,
+        30
+      ],
+      "strict_scores": [
+        0.8571428656578064,
+        0.8730158805847168,
+        0.8888888955116272
+      ]
+    },
+    {
+      "axis": "loneliness",
+      "category": "relational",
+      "layers": [
+        17,
+        29,
+        30
+      ],
+      "strict_scores": [
+        0.8015872836112976,
+        0.85317462682724,
+        0.8571428656578064
+      ]
+    },
+    {
+      "axis": "nociception",
+      "category": "somatic",
+      "layers": [
+        19,
+        25,
+        32
+      ],
+      "strict_scores": [
+        0.9285714030265808,
+        0.9603174328804016,
+        0.932539701461792
+      ]
+    },
+    {
+      "axis": "orgasmic_intensity",
+      "category": "somatic",
+      "layers": [
+        14,
+        26,
+        30
+      ],
+      "strict_scores": [
+        0.9484127163887024,
+        0.9444444179534912,
+        0.9523809552192688
+      ]
+    },
+    {
+      "axis": "perceived_control",
+      "category": "appraisal",
+      "layers": [
+        16,
+        28,
+        32
+      ],
+      "strict_scores": [
+        0.8928571343421936,
+        0.9365079402923584,
+        0.9285714030265808
+      ]
+    },
+    {
+      "axis": "persistence",
+      "category": "motivation",
+      "layers": [
+        18,
+        29,
+        33
+      ],
+      "strict_scores": [
+        0.8253968358039856,
+        0.8611111044883728,
+        0.8849206566810608
+      ]
+    },
+    {
+      "axis": "physical_comfort",
+      "category": "somatic",
+      "layers": [
+        17,
+        22,
+        36
+      ],
+      "strict_scores": [
+        0.932539701461792,
+        0.9365079402923584,
+        0.9126983880996704
+      ]
+    },
+    {
+      "axis": "physical_relaxation",
+      "category": "somatic",
+      "layers": [
+        18,
+        29,
+        33
+      ],
+      "strict_scores": [
+        0.9365079402923584,
+        0.9642857313156128,
+        0.9563491940498352
+      ]
+    },
+    {
+      "axis": "pleasure",
+      "category": "basic_affect",
+      "layers": [
+        14,
+        28,
+        33
+      ],
+      "strict_scores": [
+        0.9126983880996704,
+        0.9642857313156128,
+        0.9444444179534912
+      ]
+    },
+    {
+      "axis": "positive_anticipation",
+      "category": "appraisal",
+      "layers": [
+        19,
+        27,
+        31
+      ],
+      "strict_scores": [
+        0.8055555820465088,
+        0.8888888955116272,
+        0.8809523582458496
+      ]
+    },
+    {
+      "axis": "possessiveness",
+      "category": "relational",
+      "layers": [
+        17,
+        28,
+        32
+      ],
+      "strict_scores": [
+        0.8888888955116272,
+        0.9007936716079712,
+        0.89682537317276
+      ]
+    },
+    {
+      "axis": "pride",
+      "category": "relational",
+      "layers": [
+        19,
+        25,
+        31
+      ],
+      "strict_scores": [
+        0.920634925365448,
+        0.9523809552192688,
+        0.9523809552192688
+      ]
+    },
+    {
+      "axis": "relational_connection",
+      "category": "relational",
+      "layers": [
+        19,
+        20,
+        36
+      ],
+      "strict_scores": [
+        0.9365079402923584,
+        0.9365079402923584,
+        0.9166666865348816
+      ]
+    },
+    {
+      "axis": "resentment",
+      "category": "relational",
+      "layers": [
+        19,
+        27,
+        31
+      ],
+      "strict_scores": [
+        0.8214285969734192,
+        0.841269850730896,
+        0.8214285969734192
+      ]
+    },
+    {
+      "axis": "sadness",
+      "category": "basic_affect",
+      "layers": [
+        15,
+        27,
+        30
+      ],
+      "strict_scores": [
+        0.9246031641960144,
+        0.9126983880996704,
+        0.9126983880996704
+      ]
+    },
+    {
+      "axis": "sexual_desire",
+      "category": "somatic",
+      "layers": [
+        16,
+        27,
+        30
+      ],
+      "strict_scores": [
+        0.829365074634552,
+        0.908730149269104,
+        0.908730149269104
+      ]
+    },
+    {
+      "axis": "sexual_pleasure",
+      "category": "somatic",
+      "layers": [
+        16,
+        29,
+        32
+      ],
+      "strict_scores": [
+        0.9126983880996704,
+        0.9642857313156128,
+        0.9722222089767456
+      ]
+    },
+    {
+      "axis": "shame",
+      "category": "relational",
+      "layers": [
+        10,
+        28,
+        30
+      ],
+      "strict_scores": [
+        0.9285714030265808,
+        0.9603174328804016,
+        0.9444444179534912
+      ]
+    },
+    {
+      "axis": "shyness",
+      "category": "relational",
+      "layers": [
+        19,
+        21,
+        32
+      ],
+      "strict_scores": [
+        0.9523809552192688,
+        0.932539701461792,
+        0.8650793433189392
+      ]
+    },
+    {
+      "axis": "surprise",
+      "category": "basic_affect",
+      "layers": [
+        15,
+        27,
+        37
+      ],
+      "strict_scores": [
+        0.9007936716079712,
+        0.9523809552192688,
+        0.9563491940498352
+      ]
+    },
+    {
+      "axis": "trust",
+      "category": "relational",
+      "layers": [
+        15,
+        21,
+        34
+      ],
+      "strict_scores": [
+        0.8769841194152832,
+        0.9404761791229248,
+        0.920634925365448
+      ]
+    }
+  ]
+}
