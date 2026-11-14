@@ -1,5 +1,13 @@
 # Open-domain behavioral experiments
 
+> **Looking for the model's actual words?** This document explains the design
+> and interpretation. The [complete raw transcript file](RAW_TRANSCRIPTS.md)
+> preserves every retained input and output verbatim, including high-dose
+> failures. Exact intervention vectors are in
+> [`experiments/profiles_31b.json`](../experiments/profiles_31b.json), and
+> mature-state outputs are in the separate
+> [opt-in appendix](MATURE_STATE_APPENDIX.md).
+
 ## Scope
 
 This report records three exploratory experiments run with the released Gemma

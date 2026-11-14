@@ -11,6 +11,8 @@ the protocol explicitly studied multi-turn conditioning or state switching.
 
 The associated results and claim boundaries are documented in:
 
+- [`docs/RAW_TRANSCRIPTS.md`](../docs/RAW_TRANSCRIPTS.md) — every retained
+  prompt and model output, verbatim
 - [`docs/EXPERIMENTS.md`](../docs/EXPERIMENTS.md)
 - [`docs/MATURE_STATE_APPENDIX.md`](../docs/MATURE_STATE_APPENDIX.md)
 
