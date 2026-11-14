@@ -13,13 +13,17 @@ Expected contract:
 - Apple silicon host.
 
 ```bash
-python3 -m venv .venv
-.venv/bin/pip install -r requirements-mlx.txt
-.venv/bin/python demo/server_mlx.py \
-  --model /absolute/path/to/gemma-4-12b-it-4bit-mlx \
-  --writer artifacts/gemma4-12b/writer/direct44_raw_three_layer_writer.npz \
-  --reader artifacts/gemma4-12b/reader/direct44_postwriter_live_affect_reader.npz
+cp .env.example .env.local
+# Set NEURAL_STATE_OS_12B_MODEL in .env.local.
+scripts/setup_mlx_macos.sh
+scripts/run_mlx_12b_local.sh
 ```
+
+The launcher validates the checkpoint, writer, and reader before loading the
+model. Its default virtual environment lives outside the repository at
+`~/Library/Application Support/Neural-State-OS/venv-mlx`; override it with
+`NEURAL_STATE_OS_VENV` when needed. Optional MLX memory and cache limits are
+also configured through `.env.local`.
 
 ## Gemma 4 31B IT — CUDA
 

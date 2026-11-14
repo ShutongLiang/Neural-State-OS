@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import threading
 import time
 from functools import partial
@@ -120,6 +121,8 @@ class Direct44Engine:
         system_prompt: str,
         reader_path: Path,
     ) -> None:
+        self.model_path = model_path.resolve()
+        self.writer_path = writer_path.resolve()
         bank = np.load(writer_path, allow_pickle=False)
         required = {
             "axes", "categories", "selected_layers", "directions", "layer_weights",
@@ -714,9 +717,9 @@ class Direct44Engine:
     def status(self) -> dict[str, Any]:
         return {
             "ready": True,
-            "model": str(MODEL_PATH),
+            "model": str(self.model_path),
             "writer": "Direct-44 clean raw factorial three-layer only",
-            "writer_path": str(WRITER_PATH),
+            "writer_path": str(self.writer_path),
             "default_system_prompt": self.system_prompt,
             "weights": self.weights[0].tolist(),
             "axis_info": [
@@ -762,6 +765,12 @@ class Direct44Engine:
                 "experimental_probes": self.experimental_probes.status(),
             },
             "load_seconds": round(self.load_seconds, 3),
+            "mlx_memory": {
+                "limit_bytes": int(mx.get_memory_limit()),
+                "active_bytes": int(mx.get_active_memory()),
+                "cache_bytes": int(mx.get_cache_memory()),
+                "peak_bytes": int(mx.get_peak_memory()),
+            },
         }
 
 
@@ -852,11 +861,23 @@ def main() -> None:
     parser.add_argument("--thinking-max-tokens", type=int, default=1024)
     parser.add_argument("--reader", type=Path, default=READER_PATH)
     args = parser.parse_args()
+    memory_limit_gb = float(os.environ.get("NEURAL_STATE_OS_MLX_MEMORY_LIMIT_GB", "0"))
+    cache_limit_mb = float(os.environ.get("NEURAL_STATE_OS_MLX_CACHE_LIMIT_MB", "0"))
+    if memory_limit_gb > 0:
+        mx.set_memory_limit(int(memory_limit_gb * 1024**3))
+    if cache_limit_mb > 0:
+        mx.set_cache_limit(int(cache_limit_mb * 1024**2))
     if not args.model.exists():
         raise FileNotFoundError(args.model)
     if not args.writer.exists():
         raise FileNotFoundError(args.writer)
     print(f"Loading model: {args.model}", flush=True)
+    print(
+        "MLX memory policy: "
+        f"limit={mx.get_memory_limit() / 1024**3:.2f} GiB, "
+        f"cache={cache_limit_mb:.0f} MiB",
+        flush=True,
+    )
     engine = Direct44Engine(
         args.model,
         args.writer,
